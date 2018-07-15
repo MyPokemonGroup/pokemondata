@@ -1,0 +1,23 @@
+{
+  "name": "pokemon-data",
+  "version": "1.0.0",
+  "description": "Pokemon Data",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MyPokemonGroup/pokemondata.git"
+  },
+  "author": "Alvin Kang, Charles Weng",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MyPokemonGroup/pokemondata/issues"
+  },
+  "homepage": "https://github.com/MyPokemonGroup/pokemondata#readme",
+  "dependencies": {
+    "mysql": "^2.15.0",
+    "sequelize": "^4.38.0"
+  }
+}
