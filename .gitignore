@@ -73,4 +73,4 @@ typings/
 .serverless
 
 # DB config
-config.js
+config.json
