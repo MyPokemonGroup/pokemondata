@@ -4,7 +4,7 @@ import PokeApiData from './PokeApiData.js';
 const getPokeApiCount = () => {
     return axios.get('https://pokeapi.co/api/v2/pokemon-species/')
         .then((response) => {
-            return Math.floor(response.data.count);
+            return response.data.count;
         })
         .catch((error) => {
             return error;
