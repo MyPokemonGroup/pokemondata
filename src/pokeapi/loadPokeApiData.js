@@ -43,8 +43,6 @@ const getPokeApiDescriptions = (count) => {
 
     return axios.all(promises).then((response) => {
         return response.map((response) => {
-            console.log(response.data);
-            console.log(getPokeApiDescription(response.data));
             return getPokeApiDescription(response.data);
         });
     });

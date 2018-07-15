@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "compile-pre-es6": "cp ./src/config.json lib && babel ./node_modules/.bin/babel src --out-dir lib"
+    "compile": "cp ./src/config.json lib && ./node_modules/.bin/babel src --out-dir lib"
   },
   "repository": {
     "type": "git",
