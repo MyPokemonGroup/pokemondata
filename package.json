@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "compile-pre-es6": "babel ./node_modules/.bin/babel src --out-dir lib"
+    "compile-pre-es6": "cp ./src/config.json lib && babel ./node_modules/.bin/babel src --out-dir lib"
   },
   "repository": {
     "type": "git",
@@ -18,7 +18,12 @@
   },
   "homepage": "https://github.com/MyPokemonGroup/pokemondata#readme",
   "dependencies": {
+    "axios": "^0.18.0",
+    "babel": "^6.23.0",
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
     "mysql": "^2.15.0",
+    "mysql2": "^1.5.3",
     "sequelize": "^4.38.0"
   }
 }
