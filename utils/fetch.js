@@ -1,10 +1,12 @@
+const fetch = require("node-fetch");
+
 /**
  * Asynchronous helper function to call fetch()
  * *** USED FOR callFetch() ***
  * @param {string} url
  * @returns {json | error} json if fetch() is successful, error otherwise
  */
-export async function asyncCall(url) {
+async function asyncCall(url) {
   let response = await fetch(url);
   if (response.ok) return await response.json();
   throw new Error(response.statusText);
@@ -15,7 +17,7 @@ export async function asyncCall(url) {
  * @param {string} url
  * @returns {json | error} json if fetch() is successful, error otherwise
  */
-export async function callFetch(url) {
+async function callFetch(url) {
   try {
     return await asyncCall(url);
   } catch (err) {
@@ -23,3 +25,7 @@ export async function callFetch(url) {
     throw new Error(err);
   }
 }
+
+module.exports = {
+  callFetch
+};

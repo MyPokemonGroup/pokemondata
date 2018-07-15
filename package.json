@@ -19,6 +19,7 @@
   "dependencies": {
     "mysql": "^2.15.0",
     "mysql2": "^1.5.3",
+    "node-fetch": "^2.1.2",
     "sequelize": "^4.38.0"
   }
 }
