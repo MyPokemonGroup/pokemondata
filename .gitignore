@@ -74,3 +74,10 @@ typings/
 
 # DB config
 config.json
+
+.idea
+
+yarn.lock
+
+package-lock.json
+lib
