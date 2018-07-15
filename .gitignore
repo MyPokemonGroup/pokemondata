@@ -71,3 +71,6 @@ typings/
 
 # Serverless directories
 .serverless
+
+# DB config
+config.js
