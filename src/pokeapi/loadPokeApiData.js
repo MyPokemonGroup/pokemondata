@@ -4,7 +4,7 @@ import PokeApiData from './PokeApiData.js';
 const getPokeApiCount = () => {
     return axios.get('https://pokeapi.co/api/v2/pokemon-species/')
         .then((response) => {
-            return response.data.count;
+            return 5;//response.data.count;
         })
         .catch((error) => {
             return error;
@@ -17,51 +17,65 @@ const isValidProperty = (obj, prop) => {
 
 
 const getPokeApiDescription = (species) => {
-    if (!species || !isValidProperty(species, 'flavor_text_entries')) {
-        return null;
+    if (!species || !isValidProperty(species, 'id') || !isValidProperty(species, 'flavor_text_entries')) {
+        return { number: null, description: null };
     }
 
     let flavor_text_entries = species['flavor_text_entries'];
 
     for (let flavor_text_entry of flavor_text_entries) {
         if (isValidProperty(flavor_text_entry, 'language') &&
-            isValidProperty(flavor_text_entry['language'], 'name') &&
-            flavor_text_entry['language']['name'].toLowerCase() === 'en' &&
-            isValidProperty(flavor_text_entry, 'flavor_text')) {
-            return flavor_text_entry['flavor_text'];
+        isValidProperty(flavor_text_entry['language'], 'name') &&
+        flavor_text_entry['language']['name'].toLowerCase() === 'en' &&
+        isValidProperty(flavor_text_entry, 'flavor_text')) {
+            return { number: species['id'], description: flavor_text_entry['flavor_text'] };
         }
     }
 
-    return null;
+    return { number: null, description: null };
 };
 
 const getPokeApiDescriptions = (count) => {
     let promises = [];
+
     for (let i = 1; i <= count; i++) {
-        promises.push(axios.get(`https://pokeapi.co/api/v2/pokemon-species/${count}`));
+        promises.push(axios.get(`https://pokeapi.co/api/v2/pokemon-species/${i}`));
     }
 
-    return axios.all(promises).then((response) => {
-        return response.map((response) => {
-            return getPokeApiDescription(response.data);
-        });
-    });
+    return promises;
 };
 
-const setPokeApiDescriptions = (descriptions) => {
-    for (let description of descriptions) {
-        PokeApiData.sync({force: true}).then(() => {
-            return PokeApiData.create({
+const setPokeApiDescriptions = (promises) => {
+    for (let i = 0; i < promises.length; i++) {
+        let promise = promises[i];
+
+        const sleep = (ms) => {
+            return new Promise((resolve) => setTimeout(resolve, ms));
+        };
+
+        const saveDescription = (response) => {
+            let { number, description } = getPokeApiDescription(response.data);
+            PokeApiData.create({
+                number,
                 description
             });
-        });
+        };
+
+        promise
+            .then(sleep((i+2)*3000))
+            .then(saveDescription)
+            .catch(error => {
+                console.log(error);
+            });
     }
 };
 
 const loadPokeApiData = () => {
-    getPokeApiCount()
-        .then(getPokeApiDescriptions)
-        .then(setPokeApiDescriptions);
+    PokeApiData.sync({force: true}).then(() => {
+        getPokeApiCount()
+            .then(getPokeApiDescriptions)
+            .then(setPokeApiDescriptions)
+    });
 };
 
 export default loadPokeApiData();
