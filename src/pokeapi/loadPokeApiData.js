@@ -4,7 +4,7 @@ import PokeApiData from './PokeApiData.js';
 const getPokeApiCount = () => {
     return axios.get('https://pokeapi.co/api/v2/pokemon-species/')
         .then((response) => {
-            return 5;//response.data.count;
+            return response.data.count;
         })
         .catch((error) => {
             return error;
@@ -16,7 +16,7 @@ const isValidProperty = (obj, prop) => {
 };
 
 
-const getPokeApiDescription = (species) => {
+const filterApiData = (species) => {
     if (!species || !isValidProperty(species, 'id') || !isValidProperty(species, 'flavor_text_entries')) {
         return { number: null, description: null };
     }
@@ -35,46 +35,38 @@ const getPokeApiDescription = (species) => {
     return { number: null, description: null };
 };
 
-const getPokeApiDescriptions = (count) => {
-    let promises = [];
-
-    for (let i = 1; i <= count; i++) {
-        promises.push(axios.get(`https://pokeapi.co/api/v2/pokemon-species/${i}`));
-    }
-
-    return promises;
+const getPokeApiData = (pokeNumber) => {
+    return axios.get(`https://pokeapi.co/api/v2/pokemon-species/${pokeNumber}`)
+        .then(response => filterApiData(response.data));
 };
 
-const setPokeApiDescriptions = (promises) => {
-    for (let i = 0; i < promises.length; i++) {
-        let promise = promises[i];
-
-        const sleep = (ms) => {
-            return new Promise((resolve) => setTimeout(resolve, ms));
-        };
-
-        const saveDescription = (response) => {
-            let { number, description } = getPokeApiDescription(response.data);
-            PokeApiData.create({
-                number,
-                description
-            });
-        };
-
-        promise
-            .then(sleep((i+2)*3000))
-            .then(saveDescription)
-            .catch(error => {
-                console.log(error);
-            });
+const setPokeApiData = (data) => {
+    if (!data) {
+        throw new Error('Unable to set null data');
     }
+    let { number, description } = data;
+    PokeApiData.create({
+        number,
+        description
+    });
+};
+
+const getAndSetPokeApiData = (pokeNumber) => {
+    return getPokeApiData(pokeNumber)
+        .then(setPokeApiData)
+        .catch((error) => getAndSetPokeApiData(pokeNumber));
 };
 
 const loadPokeApiData = () => {
     PokeApiData.sync({force: true}).then(() => {
         getPokeApiCount()
-            .then(getPokeApiDescriptions)
-            .then(setPokeApiDescriptions)
+            .then((count) => {
+                console.log(count);
+                for (let i = 1; i <= count; i++) {
+                        getAndSetPokeApiData(i);
+                    }
+                }
+            )
     });
 };
 
