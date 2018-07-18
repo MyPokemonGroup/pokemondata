@@ -60,22 +60,22 @@ const getBastionApiInfos = count => {
 
 const setBastionApiInfos = infos => {
   for (let info of infos) {
-    BastionApiData.sync(
-      { force: true }.then(() => {
-        return BastionApiData.create({
-          number: info.number,
-          name: info.name,
-          image: info.image
-        });
-      })
-    );
+    BastionApiData.sync({ force: true }).then(() => {
+      return BastionApiData.create({
+        number: info.number,
+        name: info.name,
+        image: info.image
+      });
+    });
   }
 };
 
-const loadBastionApiData = () => {
+export const loadBastionApiData = () => {
   getBastionApiCount()
     .then(getBastionApiInfos)
     .then(setBastionApiInfos);
 };
 
-export default loadBastionApiData;
+export const loadBastionApiData10 = () => {
+  getBastionApiInfos(10).then(setBastionApiInfos);
+};
