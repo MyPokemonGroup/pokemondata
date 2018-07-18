@@ -54,10 +54,17 @@ const setPokeApiData = (data) => {
         throw new Error('Unable to set null data');
     }
     let { number, description } = data;
-    PokeApiData.create({
-        number,
-        description
-    });
+    PokeApiData
+        .create({
+            number,
+            description
+        })
+        .catch((error) => {
+            if (error.name === 'SequelizeUniqueConstraintError') {
+                console.log(`Pokemon number ${number} already exists, 
+                data not inserted.`);
+            }
+        });
 };
 
 const getAndSetPokeApiData = (pokeNumber, backOff = 1) => {
