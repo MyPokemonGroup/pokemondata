@@ -1,6 +1,7 @@
 import axios from "axios";
 import BastionApiData from "./BastionApiData";
 
+// Get the total Pokemon count in Bastion API (use very infrequently)
 const getBastionApiCount = () => {
   return axios
     .get("https://pokeapi.bastionbot.org/v1/pokemon/counts")
@@ -8,10 +9,12 @@ const getBastionApiCount = () => {
     .catch(error => error);
 };
 
+// Helper function to check if `prop` is a valid property of `obj`
 const isValidProperty = (obj, prop) => {
   return obj.hasOwnProperty(prop) && obj[prop];
 };
 
+// Pulls `number` value from returned Bastion info object
 const getBastionApiNumber = data => {
   if (!data) return null;
   const info = data[0];
@@ -21,6 +24,7 @@ const getBastionApiNumber = data => {
   return null;
 };
 
+// Pulls `name` value from returned Bastion info object
 const getBastionApiName = data => {
   if (!data) return null;
   const info = data[0];
@@ -30,6 +34,7 @@ const getBastionApiName = data => {
   return null;
 };
 
+// Pulls `image` value from returned Bastion info object
 const getBastionApiImage = data => {
   if (!data) return null;
   const info = data[0];
@@ -39,26 +44,34 @@ const getBastionApiImage = data => {
   return null;
 };
 
-const getBastionApiInfos = count => {
+// Make calls to Bastion API that starts from `start` and `end`, where
+// `end` is the total number of Pokemon in the API (807 as of 07/2018)
+const getBastionApiInfos = (start = 1, end = 807) => {
   const promises = [];
-  for (let number = 1; number <= count; number++) {
+  for (let number = start; number <= end; number++) {
     promises.push(
-      axios.get(`https://pokeapi.bastionbot.org/v1/pokemon/${number}`)
+      axios
+        .get(`https://pokeapi.bastionbot.org/v1/pokemon/${number}`)
+        .catch(error => error)
     );
   }
 
-  return axios.all(promises).then(response => {
-    return response.map(response => {
-      return {
-        number: getBastionApiNumber(response.data),
-        name: getBastionApiName(response.data),
-        image: getBastionApiImage(response.data)
-      };
-    });
-  });
+  return axios
+    .all(promises)
+    .then(response => {
+      return response.map(response => {
+        return {
+          number: getBastionApiNumber(response.data),
+          name: getBastionApiName(response.data),
+          image: getBastionApiImage(response.data)
+        };
+      });
+    })
+    .catch(error => error);
 };
 
-const setBastionApiInfos = infos => {
+// Sync version of set()
+const setBastionApiInfosSync = infos => {
   for (let info of infos) {
     BastionApiData.sync({ force: true }).then(() => {
       return BastionApiData.create({
@@ -70,12 +83,22 @@ const setBastionApiInfos = infos => {
   }
 };
 
-export const loadBastionApiData = () => {
-  getBastionApiCount()
-    .then(getBastionApiInfos)
-    .then(setBastionApiInfos);
+// Non-sync (table already created) version of set()
+const setBastionApiInfos = infos => {
+  for (let info of infos) {
+    return BastionApiData.create({
+      number: info.number,
+      name: info.name,
+      image: info.image
+    });
+  }
 };
 
-export const loadBastionApiData10 = () => {
-  getBastionApiInfos(10).then(setBastionApiInfos);
+// Pass `sync` argument as true to use sync version of set()
+export const loadBastionApiData = (start, end, sync = false) => {
+  if (sync) {
+    getBastionApiInfos(start, end).then(setBastionApiInfosSync);
+  } else {
+    getBastionApiInfos(start, end).then(setBastionApiInfos);
+  }
 };
