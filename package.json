@@ -26,6 +26,7 @@
     "image-downloader": "^3.4.1",
     "mysql": "^2.15.0",
     "mysql2": "^1.5.3",
+    "s3-uploader": "^2.0.3",
     "sequelize": "^4.38.0"
   }
 }
