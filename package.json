@@ -18,10 +18,12 @@
   },
   "homepage": "https://github.com/MyPokemonGroup/pokemondata#readme",
   "dependencies": {
+    "aws-sdk": "^2.279.1",
     "axios": "^0.18.0",
     "babel": "^6.23.0",
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.7.0",
+    "image-downloader": "^3.4.1",
     "mysql": "^2.15.0",
     "mysql2": "^1.5.3",
     "sequelize": "^4.38.0"
