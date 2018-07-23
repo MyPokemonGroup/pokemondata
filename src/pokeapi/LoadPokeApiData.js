@@ -15,7 +15,6 @@ const getPokeApiCount = () => {
 
 const matchPokeApiDataCount = (count) => {
     return PokeApiData.count().then(c => {
-        console.log(count === c);
         return count === c;
     });
 };
@@ -82,7 +81,6 @@ const loadPokeApiData = () => {
     PokeApiData.sync({force: true}).then(() => {
         getPokeApiCount()
             .then((count) => {
-                console.log(count);
                 for (let i = 1; i <= count; i++) {
                         getAndSetPokeApiData(i);
                     }
