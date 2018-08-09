@@ -14,9 +14,9 @@ function updateRowImage(pokemonNumber) {
 }
 
 // Update all images, up to maxPokemonNumber
-function updateImages(maxPokemonNumber = 807) {
+function updateImages(start = 1, maxPokemonNumber = 807) {
   for (
-    let pokemonNumber = 1;
+    let pokemonNumber = start;
     pokemonNumber <= maxPokemonNumber;
     pokemonNumber++
   ) {
